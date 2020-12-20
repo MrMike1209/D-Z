@@ -1,0 +1,95 @@
+#include "pch.h"
+#include <iostream>
+#include <windows.h>
+#include <string>
+#include <vector>
+#include <codecvt>
+#include <windows.h>
+
+std::vector<std::string> binaryTree;
+size_t current;
+bool endGame, yes, isAnimalAsk;
+
+std::string getLine() {
+	std::string string;
+	while (string.empty()) {
+		std::getline(std::cin, string);
+	}
+	return string;
+}
+
+bool parseAnswer() {
+	std::string answer;
+	answer = getLine();
+	if (answer == "y" || answer == "да")
+		return true;
+	else if (answer != "n" && answer != "нет") {
+		std::cout << "> [Неверный ответ, напишите снова]" << std::endl;
+		return parseAnswer();
+	}
+	return false;
+}
+
+void restartGame() {
+	current = endGame = yes = false;
+}
+
+void addNode(const std::string question, const std::string animal) {
+	if (binaryTree.size() <= current * 2 + 3) binaryTree.resize(current * 2 + 3);
+	binaryTree.at(current) = question;
+	binaryTree.at(current * 2 + 1) = animal;
+	restartGame();
+}
+void askQuestion() {
+	if (binaryTree.at(current).empty()) {
+		std::string animal;
+		std::cout << "> Назовите животное" << std::endl;
+		animal = getLine();
+		binaryTree.at(current) = animal;
+		restartGame();
+		askQuestion();
+		return;
+	}
+	if (binaryTree.size() <= current * 2 + 1 || binaryTree.at(current * 2 + 1).empty()) {
+		std::cout << "> Это " << binaryTree.at(current) << " ?" << std::endl;
+		isAnimalAsk = true;
+		return;
+	}
+	std::cout << "> " << binaryTree.at(current) << std::endl;
+}
+
+void animalAsk() {
+	if (yes) {
+		std::cout << "<Я угадал животное, начать заново ?>" << std::endl;
+		if (parseAnswer()) restartGame();
+		else endGame = true;
+		return;
+	}
+	std::string ask, animal;
+	std::cout << "> Напишите вопрос, отличающий животное" << std::endl;
+	ask = getLine();
+	std::cout << "> Назовите животное" << std::endl;
+	animal = getLine();
+	addNode(ask, animal);
+	return;
+}
+
+int main() {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	setlocale(LC_ALL, "rus");
+	//
+
+	addNode("У него есть шерсть?", "тигр");
+	while (!endGame) {
+		isAnimalAsk = false;
+		askQuestion();
+		yes = parseAnswer();
+		if (isAnimalAsk) {
+			animalAsk();
+			continue;
+		}
+		current = current * 2 + ((size_t)!yes + 1);
+	}
+	return 0;
+}
