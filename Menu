@@ -7,57 +7,60 @@
 
 using namespace std;
 
-void gotoxy(short x, short y) {
+const int Up = 80;
+const int Daun = 72;
+const int Enter = 13;
+
+int Arr[10];
+int LongArr = 10;
+int ItemShow = 0;
+
+void gotoxy(short x, short y)
+{
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD{ x, y }));
 }
-int AMI, AMIE;
-int Arr[10];
-int iv = 0;
-
-const int Nami = 4;
-const int Namie = 2;
 
 void menu()
 {
 	system("cls");
-	cout << "Показать масив" << endl;
-	cout << "Сортировка по возростанию" << endl;
-	cout << "Сортировка по убывния" << endl;
+	cout << "Показать масcив" << endl;
+	cout << "Сортировка по возрaстанию" << endl;
+	cout << "Сортировка по убывнию" << endl;
 	cout << "EXIT" << endl;
 
 }
 
-void Arrey()
+void Array()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < LongArr; i++)
 	{
 		Arr[i] = rand() % 99;
 	}
 }
 
-void ArreyPocaz()
+void ArrayPocaz()
 {
-	if (iv == 0) {
+	if (ItemShow == 0) {
 		system("cls");
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < LongArr; i++)
 	{
 		cout << Arr[i] << ";";
 	}
 	cout << endl;
 }
 
-void ArSortUp()
+void ArraySortUp()
 {
 	int buf;
-	Arrey();
-	ArreyPocaz();
-	iv++;
+	Array();
+	ArrayPocaz();
+	ItemShow++;
 	buf = Arr[0];
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < LongArr; i++)
 	{
-		for (int j = 0; j < 9; j++) {
+		for (int j = 0; j < (LongArr--); j++) {
 			if (Arr[j + 1] < Arr[j]) {
 				buf = Arr[j];
 				Arr[j] = Arr[j + 1];
@@ -65,22 +68,21 @@ void ArSortUp()
 			}
 		}
 	}
-	cout << "Отсортированый массив" << endl;
-	ArreyPocaz();
-	iv--;
-
+	cout << "Отсортированный массив" << endl;
+	ArrayPocaz();
+	ItemShow--;
 }
 
-void ArSortDaun()
+void ArraySortDaun()
 {
 	int buf;
-	Arrey();
-	ArreyPocaz();
-	iv++;
+	Array();
+	ArrayPocaz();
+	ItemShow++;
 	buf = Arr[0];
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < LongArr; i++)
 	{
-		for (int j = 0; j < 9; j++) {
+		for (int j = 0; j < (LongArr--); j++) {
 			if (Arr[j + 1] > Arr[j]) {
 				buf = Arr[j];
 				Arr[j] = Arr[j + 1];
@@ -88,94 +90,88 @@ void ArSortDaun()
 			}
 		}
 	}
-	cout << "Отсортированый массив" << endl;
-	ArreyPocaz();
-	iv--;
+	cout << "Отсортированный массив" << endl;
+	ArrayPocaz();
+	ItemShow--;
 }
 
 void ExitGlobal()
 {
+	const int LotItem = 2;
 	bool Exit = false;
-	int ch;
-
+	int ch, MenuItem;
 	while (!Exit) {
 		system("cls");
 		cout << "Yes" << endl;
 		cout << "No" << endl;
-		gotoxy(0, AMIE);
+		gotoxy(0, MenuItem);
 		ch = _getch();
-		if (ch == 224)
-			ch = _getch();
 		switch (ch)
 		{
-		case 72: AMIE--; break;
-		case 80:  AMIE++;  break;
-		case 13:
-			if (AMIE == 0)
+		case Daun: MenuItem--; break;
+		case Up:  MenuItem++;  break;
+		case Enter:
+			if (MenuItem == 0)
 			{
 				system("cls");
-				exit(1);
+				EXIT_SUCCESS;
 
 			}
-			else if (AMIE == 1)
+			else if (MenuItem == 1)
 			{
-				Exit = 1;
+
 			}
 
 			break;
 
 		}
-		if (AMIE < 0) AMIE = Namie - 1;
-		if (AMIE > Namie - 1) AMIE = 0;
+		if (MenuItem < 0) MenuItem = LotItem - 1;
+		if (MenuItem > LotItem - 1) MenuItem = 0;
 	}
 }
 
 int main()
 {
 	setlocale(LC_ALL, "RUS");
+	const int LotItem = 4;
 	bool exit = false;
-	int ch;
-
+	int ch, MenuItem;
 	while (!exit)
 	{
 		menu();
-		gotoxy(0, AMI);
+		gotoxy(0, MenuItem);
 		ch = _getch();
-		if (ch == 224)
-			ch = _getch();
 		switch (ch)
 		{
-		case 27:ExitGlobal(); break;
-		case 72: AMI--; break;
-		case 80:  AMI++;  break;
-		case 13:
-			if (AMI == 0)
+		case Daun: MenuItem--; break;
+		case Up:  MenuItem++;  break;
+		case Enter:
+			if (MenuItem == 0)
 			{
-				Arrey();
-				ArreyPocaz();
+				Array();
+				ArrayPocaz();
 				_getch();
 			}
-			else if (AMI == 1)
+			else if (MenuItem == 1)
 			{
-				ArSortUp();
+				ArraySortUp();
 				_getch();
 			}
 
-			else if (AMI == 2)
+			else if (MenuItem == 2)
 			{
-				ArSortDaun();
+				ArraySortDaun();
 				_getch();
 
 			}
-			else if (AMI == 3)
+			else if (MenuItem == 3)
 			{
 				ExitGlobal();
-
 			}
 			break;
 		}
-		if (AMI < 0) AMI = Nami - 1;
-		if (AMI > Nami - 1) AMI = 0;
+		if (MenuItem < 0) MenuItem = LotItem - 1;
+		if (MenuItem > LotItem - 1) MenuItem = 0;
 	}
 
 	return 0;
